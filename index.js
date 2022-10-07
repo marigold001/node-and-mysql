@@ -11,21 +11,24 @@ var connection = mysql.createConnection({
 
 connection.connect()
 connection.query("SELECT * FROM users", (request, data) => {
-    console.log(data)
     app.get('/', function(req, res) {
-        res.send("path /users for information on all users, path /users/1 for information about a single user")
+        res.send("Go to path /users for information on all users and path /users/1 or /users/2 etc. for information about a single user")
     })
     app.get('/users', function(req, res) {
         var allUsers = ''
         for(let i = 0; i < data.length; i++) {
-            allUsers += data[i].name + ' ' + data[i].surname + ' ' + data[i].email + ' '
+            allUsers += data[i].name + ' ' + data[i].surname + ' ' + data[i].email + '<br>';
         }
         res.send(allUsers)
     })
-    app.get('/users/1', function (req, res) {
-        res.send(data[1])
+    app.get('/users/:id', function (req, res) {
+        let id = req.params.id;
+        let userInfo = data[id].name + " " + data[id].surname + " " + data[id].email;
+        res.send(userInfo);
     })
 })
+
+
 app.listen(3000, function() {
     console.log("Connected")
 })
